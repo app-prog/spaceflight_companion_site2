@@ -1,203 +1,44 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Spaceflight Mechanics – Companion Website</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: #0b1020;
-      color: #e8eefc;
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 32px 20px;
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    h2 {
-      margin-top: 2rem;
-      font-size: 1.4rem;
-    }
-
-    .subtitle {
-      opacity: 0.85;
-      margin-bottom: 1.5rem;
-    }
-
-    .card {
-      background: #121a33;
-      border: 1px solid #22304f;
-      border-radius: 14px;
-      padding: 20px;
-      margin: 20px 0;
-    }
-
-    .actions {
-      margin: 24px 0;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 12px 18px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 600;
-      background: #2e6bff;
-      color: white;
-    }
-
-    .btn.secondary {
-      background: #22304f;
-    }
-
-    .btn.tertiary {
-      background: transparent;
-      border: 1px solid #2e6bff;
-      color: #e8eefc;
-    }
-
-    footer {
-      margin-top: 40px;
-      opacity: 0.75;
-      font-size: 0.9rem;
-    }
-
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .tool-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-
-    @media (min-width: 840px) {
-      .tool-grid {
-        grid-template-columns: 1fr 1fr;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orbital Motion 3D (Normalized by Earth Radius)</title>
+    <style>
+      html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #0b1020; }
+      #app { position: fixed; inset: 0; }
+      .hud {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: rgba(0,0,0,0.40);
+        color: rgba(255,255,255,0.92);
+        font: 12px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        max-width: min(540px, calc(100vw - 24px));
+        backdrop-filter: blur(6px);
       }
-    }
-
-    .tool-card h2 {
-      margin-top: 0;
-    }
-
-    .tool-meta {
-      opacity: 0.85;
-      font-size: 0.95rem;
-      margin-top: 8px;
-    }
-
-    .tool-actions {
-      margin-top: 14px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container">
-    <h1>Spaceflight Mechanics – Companion Website</h1>
-    <p class="subtitle">
-      Companion resources for the textbook, including interactive web-based tools for orbital motion and ground track visualization.
-    </p>
-
-    <!-- Top quick actions -->
-    <div class="actions">
-      <a class="btn" href="./tools/orbital-3d/dist/" target="_blank" rel="noopener">
-        Launch 3D Orbit Tool
-      </a>
-      <a class="btn" href="./tools/orbital-3d-gtrack/dist/" target="_blank" rel="noopener">
-        Launch 3D Ground Track Tool
-      </a>
-      <a class="btn secondary" href="./legal/" target="_blank" rel="noopener">
-        Legal & Licenses
-      </a>
-    </div>
-
-    <!-- Tools section -->
-    <div class="card">
-      <h2>Interactive tools</h2>
-
-      <div class="tool-grid">
-        <div class="card tool-card">
-          <h2>3D Orbit Tool</h2>
-          <p>
-            Visualizes two-body orbital motion using classical orbital elements
-            (<em>a</em>, <em>e</em>, <em>i</em>, Ω, ω, ν₀) with real-time interaction.
-            Distances are normalized by Earth radius.
-          </p>
-          <ul>
-            <li>Interactive orbit geometry and satellite motion</li>
-            <li>Designed for teaching and conceptual understanding</li>
-            <li>Runs directly in a modern browser</li>
-          </ul>
-          <div class="tool-meta mono">Path: /tools/orbital-3d/dist/</div>
-          <div class="tool-actions">
-            <a class="btn" href="./tools/orbital-3d/dist/" target="_blank" rel="noopener">Open</a>
-            <a class="btn tertiary" href="./tools/orbital-3d/dist/index.html" target="_blank" rel="noopener">Direct index</a>
-          </div>
-        </div>
-
-        <div class="card tool-card">
-          <h2>3D Ground Track Tool</h2>
-          <p>
-            Extends the 3D orbit visualization by adding an Earth surface model and a ground-track plot,
-            illustrating the subsatellite point evolution under Earth rotation.
-          </p>
-          <ul>
-            <li>Earth surface rendering (procedural textures)</li>
-            <li>Ground track and subsatellite point visualization</li>
-            <li>Helpful for relating orbital inclination to latitude coverage</li>
-          </ul>
-          <div class="tool-meta mono">Path: /tools/orbital-3d-gtrack/dist/</div>
-          <div class="tool-actions">
-            <a class="btn" href="./tools/orbital-3d-gtrack/dist/" target="_blank" rel="noopener">Open</a>
-            <a class="btn tertiary" href="./tools/orbital-3d-gtrack/dist/index.html" target="_blank" rel="noopener">Direct index</a>
-          </div>
-        </div>
+      .hud b { font-weight: 600; }
+      .hud .row { display: flex; gap: 16px; flex-wrap: wrap; }
+      .hud .k { opacity: 0.75; }
+    </style>
+    <script type="module" crossorigin src="./assets/index-DtpW4SfL.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div class="hud" id="hud">
+      <div><b>Orbital Motion 3D</b> — distances normalized by Earth radius (Rₑ = 1)</div>
+      <div class="row" style="margin-top:6px;">
+        <div><span class="k">a:</span> <span id="hud-a">—</span> RE</div>
+        <div><span class="k">e:</span> <span id="hud-e">—</span></div>
+        <div><span class="k">i:</span> <span id="hud-i">—</span> deg</div>
+        <div><span class="k">Period:</span> <span id="hud-T">—</span></div>
+        <div><span class="k">Altitude:</span> <span id="hud-alt">—</span> km</div>
+        <div><span class="k">Speed:</span> <span id="hud-v">—</span> km/s</div>
+        <div><span class="k">Subpoint:</span> <span id="hud-lat">—</span>°, <span id="hud-lon">—</span>°</div>
       </div>
+      <div style="margin-top:6px; opacity:0.75;">Mouse: rotate / zoom / pan. Use GUI (top-right) to modify orbit.</div>
     </div>
-
-    <div class="card">
-      <h2>Recommended citation</h2>
-      <p class="mono">
-        Kafafy, R., Abdelkhalek, O. &amp; Okasha, M., <em>Spaceflight: Mechanics and Mission Analysis</em>, Companion Software, 2026.
-      </p>
-    </div>
-
-    <div class="card">
-      <h2>System requirements</h2>
-      <ul>
-        <li>Modern web browser (Chrome, Edge, Firefox, Safari)</li>
-        <li>JavaScript enabled</li>
-        <li>Hardware acceleration/WebGL enabled (typical default)</li>
-      </ul>
-    </div>
-
-    <footer>
-      © <span id="year"></span> Raed Kafafy. Educational use only.
-    </footer>
-  </div>
-
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
-</body>
+  </body>
 </html>
