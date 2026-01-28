@@ -1,110 +1,164 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Orbital Motion 3D (Normalized by Earth Radius)</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbital Motion 3D + Ground Track</title>
 
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-        background: #0b1020;
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #0b1020;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: #e8eefc;
+    }
+
+    /* === 3D APP CONTAINER === */
+    #app {
+      position: fixed;
+      inset: 0;
+    }
+
+    /* === HUD === */
+    .hud {
+      position: fixed;
+      left: 12px;
+      bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.40);
+      color: rgba(255,255,255,0.92);
+      font-size: 12px;
+      line-height: 1.35;
+      max-width: min(540px, calc(100vw - 24px));
+      backdrop-filter: blur(6px);
+      z-index: 10;
+    }
+
+    .hud b { font-weight: 600; }
+    .hud .row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .hud .k { opacity: 0.75; }
+
+    /* === 2D MAP CONTAINER === */
+    #gtmap-container {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+
+      width: min(45vw, 800px);
+      aspect-ratio: 2 / 1;
+
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+
+      z-index: 10;
+    }
+
+    #gtmap-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* === MAP TOGGLE BUTTON (OUTSIDE, ATTACHED) === */
+    #gtmap-toggle {
+      position: fixed;
+      right: 12px;
+
+      /* placed just ABOVE the map */
+      bottom: calc(12px + min(45vw, 800px) / 2 + 10px);
+
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+
+      color: #fff;
+      background: rgba(0,0,0,0.65);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 10px;
+
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    #gtmap-toggle:hover {
+      background: rgba(0,0,0,0.85);
+    }
+
+    /* === MOBILE === */
+    @media (max-width: 768px) {
+      #gtmap-container {
+        width: calc(100vw - 24px);
       }
 
-      #app {
-        position: fixed;
-        inset: 0;
+      #gtmap-toggle {
+        bottom: calc(12px + 50vw + 10px);
       }
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-D2D3_r9l.js"></script>
+</head>
 
-      /* ================= HUD ================= */
-      .hud {
-        position: fixed;
-        left: 12px;
-        bottom: 12px;
-        padding: 10px 12px;
-        border-radius: 10px;
-        background: rgba(0,0,0,0.40);
-        color: rgba(255,255,255,0.92);
-        font: 12px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        max-width: min(540px, calc(100vw - 24px));
-        backdrop-filter: blur(6px);
-        z-index: 10;
-      }
+<body>
 
-      .hud b { font-weight: 600; }
-      .hud .row { display: flex; gap: 16px; flex-wrap: wrap; }
-      .hud .k { opacity: 0.75; }
+  <!-- 3D SCENE -->
+  <div id="app"></div>
 
-      /* ================= 2D GROUND TRACK MAP ================= */
-      #gtmap-panel {
-        position: fixed;
-        right: 14px;
-        bottom: 14px;
-        width: 640px;
-        height: 320px;
-        border-radius: 14px;
-        overflow: hidden;
-        background: rgba(10,14,28,0.95);
-        border: 1px solid rgba(255,255,255,0.15);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.45);
-        z-index: 9;
-      }
+  <!-- HUD -->
+  <div class="hud">
+    <div><b>Orbital Motion 3D</b> — normalized by Earth radius (Rₑ = 1)</div>
 
-      #gtmap-canvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-      }
-
-      #gtmap-title {
-        position: absolute;
-        top: 8px;
-        left: 10px;
-        font-size: 12px;
-        padding: 4px 8px;
-        border-radius: 999px;
-        background: rgba(0,0,0,0.45);
-        border: 1px solid rgba(255,255,255,0.15);
-        color: rgba(255,255,255,0.9);
-        pointer-events: none;
-      }
-    </style>
-    <script type="module" crossorigin src="./assets/index-CZdqTcGw.js"></script>
-  </head>
-
-  <body>
-    <!-- Three.js canvas -->
-    <div id="app"></div>
-
-    <!-- HUD -->
-    <div class="hud" id="hud">
-      <div><b>Orbital Motion 3D</b> — distances normalized by Earth radius (Rₑ = 1)</div>
-      <div class="row" style="margin-top:6px;">
-        <div><span class="k">a:</span> <span id="hud-a">—</span> RE</div>
-        <div><span class="k">e:</span> <span id="hud-e">—</span></div>
-        <div><span class="k">i:</span> <span id="hud-i">—</span> deg</div>
-        <div><span class="k">Period:</span> <span id="hud-T">—</span></div>
-        <div><span class="k">Altitude:</span> <span id="hud-alt">—</span> km</div>
-        <div><span class="k">Speed:</span> <span id="hud-v">—</span> km/s</div>
-        <div>
-          <span class="k">Subpoint:</span>
-          <span id="hud-lat">—</span>°, <span id="hud-lon">—</span>°
-        </div>
-      </div>
-      <div style="margin-top:6px; opacity:0.75;">
-        Mouse: rotate / zoom / pan. Use GUI (top-right) to modify orbit.
+    <div class="row">
+      <div><span class="k">a:</span> <span id="hud-a">—</span> Rₑ</div>
+      <div><span class="k">e:</span> <span id="hud-e">—</span></div>
+      <div><span class="k">i:</span> <span id="hud-i">—</span>°</div>
+      <div><span class="k">Period:</span> <span id="hud-T">—</span></div>
+      <div><span class="k">Alt:</span> <span id="hud-alt">—</span> km</div>
+      <div><span class="k">v:</span> <span id="hud-v">—</span> km/s</div>
+      <div>
+        <span class="k">Sub-sat:</span>
+        <span id="hud-lat">—</span>°,
+        <span id="hud-lon">—</span>°
       </div>
     </div>
 
-    <!-- 2D Ground Track Map -->
-    <div id="gtmap-panel">
-      <canvas id="gtmap-canvas" width="640" height="320"></canvas>
-      <div id="gtmap-title">Ground Track (Plate Carree)</div>
+    <div style="margin-top:6px; opacity:0.75;">
+      Mouse: rotate / zoom / pan · GUI (top-right) controls orbit
     </div>
+  </div>
 
-    <!-- Main entry -->
-  </body>
+  <!-- MAP TOGGLE -->
+  <button id="gtmap-toggle">Hide Map</button>
+
+  <!-- 2D GROUND TRACK MAP -->
+  <div id="gtmap-container">
+    <canvas id="gtmap-canvas" width="800" height="400"></canvas>
+  </div>
+
+  <!-- MAIN SCRIPT -->
+
+  <!-- TOGGLE LOGIC -->
+  <script>
+    const btn = document.getElementById('gtmap-toggle');
+    const map = document.getElementById('gtmap-container');
+
+    btn.addEventListener('click', () => {
+      const hidden = map.style.display === 'none';
+      map.style.display = hidden ? 'block' : 'none';
+      btn.textContent = hidden ? 'Hide Map' : 'Show Map';
+    });
+  </script>
+
+</body>
 </html>
